@@ -108,7 +108,7 @@ def select_version_and_install_path():
     # To store the folder path
     folder_path = None
 
-    messagebox.showwarning("CLOSE ALL SC2-RELATED PROGRAMS BEFORE PROCEEDING!", "Close all StarCraft II-related programs before proceeding\n(StarCraft II.exe, Battle.net, Agent.exe, the map editor, any other StarCraft II/Blizzard-related programs etc.)")
+    messagebox.showwarning("CLOSE ALL SC2-RELATED PROGRAMS BEFORE PROCEEDING!", "READ THE GITHUB INSTRUCTIONS BEFORE YOU USE THIS!\n\nClose all StarCraft II-related programs before proceeding\n(StarCraft II.exe, Battle.net, Agent.exe, the map editor, any other StarCraft II/Blizzard-related programs etc.)")
 
     # Function to handle confirmation and folder selection
     def on_confirm():
@@ -206,9 +206,9 @@ def add_build_info():
     try:
         # Gather needed values
         insertion_string = version_dict[target_version][1]
-        # print(insertion_string)
-        substring = version_dict[target_version][2]
-        # print(substring)
+        # Build Key (field index 2) is unique per version; extract directly from
+        # the insertion string so the check can't drift from what's inserted.
+        target_build_key = insertion_string.strip().split('|')[2]
         target = "Product!STRING:0"
 
         with open(build_path, 'r+') as file:
@@ -216,16 +216,19 @@ def add_build_info():
             if not content:
                 file.write(build_init)
                 content = build_init
-        
-            # If substring is already present, the target version build info is already present
-            if substring in content:
-                print("Build info already present. Skipping build info addition.")
-                return
+
+            # Parse existing entries (pipe-separated) and check the Build Key field
+            for line in content.split('\n'):
+                fields = line.split('|')
+                if len(fields) > 2 and fields[2] == target_build_key:
+                    print("Build info already present. Skipping build info addition.")
+                    return
 
             # Add the build info and write back
             new_content = content.replace(target, target + insertion_string)
             file.seek(0)
             file.write(new_content)
+            file.truncate()
 
         print("Build info added successfully.")
     except Exception as e:

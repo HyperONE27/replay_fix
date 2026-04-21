@@ -16,7 +16,7 @@ support64_path = ""
 local_path = os.getcwd()
 
 # CDN configuration --- must be updated every ~3-4(?) weeks
-cdn = "dea194011a8a3ca967f9813c979bc893"
+cdn = "1bca6449e3e5d9d9bf79b5949219df86"
 
 # idk why I ended up needing to have this here but I guess I do
 build_init = "Branch!STRING:0|Active!DEC:1|Build Key!HEX:16|CDN Key!HEX:16|Install Key!HEX:16|IM Size!DEC:4|CDN Path!STRING:0|CDN Hosts!STRING:0|CDN Servers!STRING:0|Tags!STRING:0|Armadillo!STRING:0|Last Activated!STRING:0|Version!STRING:0|KeyRing!HEX:16|Product!STRING:0"
@@ -36,11 +36,16 @@ version_dict = {
         "\nus|1|6b36ffd0acf5bf1cd8c3e289be78d120|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.13.92440||",
         "5.0.13.92440"
     ],
-    #"5.0.14": [
-    #    93333,
-    #    "\nus|1|8453c2f1c98b955334c7284215429c36|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.14.93333||",
-    #    "5.0.14.93333"
-    #]
+    "5.0.14": [
+        93333,
+        "\nus|1|8453c2f1c98b955334c7284215429c36|" + cdn + "|f5703696f8f01d56ea9db9d115099dc7||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://blzddist1-a.akamaihd.net/?fallback=1&maxhosts=4 https://level3.ssl.blizzard.com/?fallback=1&maxhosts=4 https://us.cdn.blizzard.com/?fallback=1&maxhosts=4|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?|||5.0.14.93333||",
+        "5.0.14.93333"
+    ],
+    "5.0.15": [
+        96592,
+        "\nus|1|d2c74ce14b6a83d52ad4c16bb5a2aad8|" + cdn + "|06e931af72abd6f062324d830ff094ae||tpr/sc2|level3.blizzard.com us.cdn.blizzard.com|http://level3.blizzard.com/?maxhosts=4 http://us.cdn.blizzard.com/?maxhosts=4 https://level3.ssl.blizzard.com/?maxhosts=4&fallback=1 https://us.cdn.blizzard.com/?maxhosts=4&fallback=1|Windows code US? acct-USA? geoip-US? enUS speech?:Windows code US? acct-USA? geoip-US? enUS text?:Windows code US? acct-USA? geoip-US? koKR speech?:Windows code US? acct-USA? geoip-US? koKR text?|||5.0.15.96592||",
+        "5.0.15.96592"
+    ]
 }
 
 def main():
@@ -71,8 +76,16 @@ def select_version_and_install_path():
     root = tk.Tk()
     root.title("Select StarCraft II version to recover")
 
-    # Variable to store selected version
-    selected_version = tk.StringVar(value="Select a version")
+    # Map of dropdown display labels -> internal version keys in version_dict
+    version_display_map = {
+        "5.0.12.91115": "5.0.12",
+        "5.0.13.92440": "5.0.13",
+        "5.0.14.93333": "5.0.14",
+        "5.0.15.96592": "5.0.15",
+    }
+
+    # Variable to store selected display label
+    selected_display = tk.StringVar(value="Select a version")
 
     # Set window size and center it on the screen
     window_width, window_height = 400, 200
@@ -88,8 +101,8 @@ def select_version_and_install_path():
     root.grid_rowconfigure(2, weight=1)  # Space below button
 
     # Create a dropdown
-    dropdown = ttk.Combobox(root, textvariable=selected_version, state="readonly")
-    dropdown['values'] = ("5.0.12", "5.0.13")
+    dropdown = ttk.Combobox(root, textvariable=selected_display, state="readonly")
+    dropdown['values'] = tuple(version_display_map.keys())
     dropdown.grid(row=0, column=0, pady=10, padx=10)
 
     # To store the folder path
@@ -100,7 +113,7 @@ def select_version_and_install_path():
     # Function to handle confirmation and folder selection
     def on_confirm():
         nonlocal folder_path  # Access the folder_path variable defined outside
-        if selected_version.get() == "Select a version":
+        if selected_display.get() not in version_display_map:
             messagebox.showwarning("Warning", "Please select a game version.")
             return
 
@@ -143,8 +156,8 @@ def select_version_and_install_path():
     # Start the GUI event loop
     root.mainloop()
 
-    # Return the results
-    return [selected_version.get(), folder_path]
+    # Return the results (translate display label back to internal version key)
+    return [version_display_map[selected_display.get()], folder_path]
 
 def backup_files():
     base_name = f"Base{version_dict[target_version][0]}"

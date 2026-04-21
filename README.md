@@ -10,7 +10,7 @@ This repository contains all the files you need to view your old, broken StarCra
 
 I originally developed this program in order to regain access to my own tournament replays. Although I am largely retired from supporting any sort of mainstream StarCraft II, in this case, I felt what I had made was simply too useful to keep to myself, so I polished it to share.
 
-This program currently supports versions 5.0.12 and 5.0.13, but I plan to keep it updated so long as I am able, since Blizzard will no doubt break more versions in the future.
+This program currently supports versions 5.0.12, 5.0.13, 5.0.14, and 5.0.15, but I plan to keep it updated so long as I am able, since Blizzard will no doubt break more versions in the future.
 
 At the heart of it all is `replay_fix.exe`, which moves some files around to trick your game into running in offline mode with a certain configuration. If you care about the details, you can read about the original method here:
 

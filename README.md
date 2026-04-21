@@ -1,5 +1,7 @@
 # replay_fix
 
+**TL;DR: This tool forces the StarCraft II binary to load an old version in Offline Mode so you can watch replays from that version. Because it runs in Offline Mode, the game cannot download any missing game data. Standard replays should play back fine; modded replays will only work if the necessary map/mod data is already downloaded locally. Your mileage may vary.**
+
 **Update: As of ~May 31st, 2025, this no longer works for version 5.0.12. I'm way too busy and out of my depth to look into why. Expect a fix slowly or never, in the meantime you may want to fork this repository and try some crazy fix yourself.**
 
 PLEASE NOTE: Offline Mode only works for versions of the game during which you owned paid game content (e.g. HotS/LotV/Nova campaigns, co-op commanders, unit/structure skins, etc.). If you did not own paid game content during the version of the game which you are trying to recover, this workaround will likely fail for you. Moreover, I'm not a subject matter expert on manipulating game data, nor am I associated with people like Talv who are. I have simply put together a program to automate a manual process they have described.
